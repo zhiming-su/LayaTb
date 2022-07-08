@@ -1,0 +1,11 @@
+{
+    "pages": [
+        "pages/home/home",
+        "pages/index/game"
+    ],
+    "window": {
+        "defaultTitle": "My App",
+        "enableMultiAudio": true,
+        "allowsBounceVertical": "NO"
+    }
+}

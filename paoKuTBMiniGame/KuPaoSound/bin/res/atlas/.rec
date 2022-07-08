@@ -1,0 +1,52 @@
+D .
+D common
+P BE8DC4E7 blank.png
+P 34505923 no.png
+P AA522933 reborn.png
+P 5FB21112 rectbox.png
+P F4A345EE StartButton.PNG
+P D62CEA91 StartButtonPressed.PNG
+D game
+P 662641DB 0.png
+P 55DEE5D5 1.png
+P BAE5A601 2.png
+P 80193AA2 3.png
+P 97A7DB6C arrow.png
+P C6CA813F finger.png
+R 417F42D9 maxd.png
+R D9884855 numwhileOutLine.png
+P 6DC7730B sreenStart.png
+P 4EE1FF8D StarAlbedo.png
+P F4A345EE StartButton.PNG
+P D72BE44B voice.png
+P 8D6F89CE voice_close.png
+D home
+P DFED49FA btn_sound_off.png
+P CD75566E btn_sound_on.png
+P B0C08B54 btn_vibrate_off.png
+P FBED832F btn_vibrate_on.png
+R ABBA37E4 Logo.png
+P 71AA2D90 srart.png
+P F4A345EE StartButton.PNG
+P D62CEA91 StartButtonPressed.PNG
+D loading
+R 1A686D61 bgcolor.jpg
+P 98CA7410 cat.png
+P 5391C9EA loading_bg.png
+P B14D1535 loading_label.png
+P 42029D99 loading_value.png
+D other
+P 5FB21112 rectbox.png
+D over
+P B3EE127D btn_reborn.png
+P 857AC452 close.png
+R B5CB6D55 failbg.png
+R 64972E27 failbg2.png
+R 38C6EC40 reborn_bg.png
+P 84566F80 reborn_label.png
+R 39A14F23 starsky.png
+R 82A13DA0 win1.png
+R 42806A0E win2.png
+D sound
+R 1DC3ABD8 destroy.wav
+R FF0B6E8D hit.wav

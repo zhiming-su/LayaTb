@@ -1,0 +1,3 @@
+<view>
+  <button style="margin-top:150px" type="primary" onTap="goToUrl">城野医生旗舰店(开始游戏)</button>
+</view>

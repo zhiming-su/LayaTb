@@ -1,0 +1,485 @@
+import ShapeThreeD, { CollisionMask } from "./ShapeThreeD";
+import GameSample from "../../GameSample";
+import GameDesgin from "../Game/GameDesgin";
+import Vector3Ext from "../Core/Vector3Ext";
+import AABBShape from "./AABBShape";
+
+export default class CollsionManagerThreeD extends Laya.Script {
+
+    constructor() { super(); }
+
+
+    //list: ShapeThreeD[] = [];
+
+    dicObb: { [key: number]: ShapeThreeD; } = {};
+
+    dicItemCollsionCharater: { [key: number]: { [key: number]: boolean; }; } = {};
+
+    public static instantce: CollsionManagerThreeD;
+
+    public Itemlist: ShapeThreeD[] = [];
+
+    public charaterlist: ShapeThreeD[] = [];
+
+
+
+    onAwake() {
+        CollsionManagerThreeD.instantce = this;
+
+        GameSample.glEvent.on(EventType.ShapeThreeDEnterWorld, this, this.OnShapeThreeDEnterWorld);
+
+
+    }
+
+    OnShapeThreeDEnterWorld(o: ShapeThreeD) {
+        if (o.mask == CollisionMask.Character) {
+            this.charaterlist.push(o);
+
+        }
+        else {
+            this.Itemlist.push(o);
+            this.dicItemCollsionCharater[o.id] = {};
+        }
+
+        this.UpdateItemDIc();
+
+    }
+
+    UpdateItemDIc() {
+        for (let i = 0; i < this.charaterlist.length; i++) {
+            let charaterObjId = this.charaterlist[i].id;
+
+            for (let k in this.dicItemCollsionCharater) {
+
+                let itemValue = this.dicItemCollsionCharater[k];
+
+                if (!itemValue[charaterObjId] != null) {
+                    if (itemValue[charaterObjId] != true)
+                        itemValue[charaterObjId] = false;
+                }
+            }
+        }
+
+
+
+    }
+
+
+
+
+    enterList = [];
+    exitList = [];
+    datacg: any = {};
+    /**如何保证先出后进的问题的 */
+    public TestSphereVsAllAABBSwpet(source: ShapeThreeD, movedir: Laya.Vector3) {
+        let charaterAABBGob = source as AABBShape;
+        // type = -1;
+        //var collsionAny = false;
+
+
+
+        /**保证先出后进的问题的 */
+
+        let charaterObjKey = charaterAABBGob.id;
+        let testCount = 0;
+        for (let index = 0; index < this.Itemlist.length; index++) {
+            let element = this.Itemlist[index] as AABBShape;
+            //activeInHierarchy 父物体隐藏后一致
+            if (element.gameObject.activeInHierarchy == false) continue;
+
+            // testCount+=1;
+            //collsionShape.collsionMask  & collsionTarget.Mask > 0
+            // let isCollstionTest = true;//(source.collsionMask & 1 << element.mask) > 0;
+
+
+            let isCollstionTest = (source.collisionMask & 1 << element.mask) > 0;
+            // if (source.GetInstanceID() != element.GetInstanceID() && element.mask == ShapeThreeD.Character|| element.mask == ShapeThreeD.Build)
+            if (source.id != element.id && isCollstionTest) {
+
+
+                let itemObjId = element.id;
+                let testaabb = element;
+                let collsion = false;
+
+                if (this.dicItemCollsionCharater[itemObjId][charaterObjKey] == true && Math.abs(source.transform.position.z - element.transform.position.z) > 50) continue;
+                testCount += 1;
+
+                collsion = charaterAABBGob.Intersects(testaabb);
+                // collsion= this.IsSweepTestCollision(charaterAABBGob.data,testaabb.data,movedir);
+
+
+
+                // Debug.Log(rs);
+                if (collsion) {
+
+                    // if (this.dicCharaterCollsion[charaterObjKey]) return;
+                    //Debug.Log("Collsion");
+                    let collsioning = false;
+                    let haskey2 = false;
+                    //    haskey2 = this.dicItemCollsionCharater[itemObjId].TryGetValue(charaterObjKey, out collsioning);
+
+                    haskey2 = this.dicItemCollsionCharater[itemObjId][charaterObjKey] != null;
+
+
+                    if (!haskey2) {
+                        console.log("not key:" + charaterObjKey);
+                    }
+
+
+                    // if (this.dicCollsion[element.GetInstanceID()] == false)
+                    if (this.dicItemCollsionCharater[itemObjId][charaterObjKey] == false) {
+
+                        source.OnShapeEnter(element);
+                        this.dicItemCollsionCharater[itemObjId][charaterObjKey] = true;
+                    }
+                    // source.OnObbEnter(element);
+
+
+                    //collsionAny = true;
+
+                    // this.dicCharaterCollsionLast[charaterObjKey] = testaabb;
+                }
+                else {
+
+                    if (this.dicItemCollsionCharater[itemObjId][charaterObjKey]) {
+                        // this.datacg.source = source;
+                        // this.datacg.element = element;
+                        source.OnShapeExit(element);
+                        // this.exitList.push(this.datacg);
+                        this.dicItemCollsionCharater[itemObjId][charaterObjKey] = false;
+                    }
+                    //    source.OnObbExit(element);
+
+
+                    // this.dicCharaterCollsion[testKey] = false;
+                    //this.dicCollsion[element.GetInstanceID()] = false;
+                }
+
+            }
+
+
+        }
+
+    }
+    onLateUpdate() {
+
+
+        if (GameDesgin.enableCollsion) {
+
+            if (this.charaterlist.length >= 1) {
+                this.GetFilterZItems(this.charaterlist[0].transform.position.z)
+
+                for (let i = 0; i < this.charaterlist.length; i++) {
+                    let charaterAABB = this.charaterlist[i];
+                    this.PlayerDetectFilterIte(charaterAABB, charaterAABB.moveSpeed);
+                }
+            }
+        }
+
+
+
+    }
+    public PlayerDetectFilterIte(source: ShapeThreeD, movedir: Laya.Vector3) {
+        let charaterAABBGob = source as AABBShape;
+
+        let charaterObjKey = charaterAABBGob.id;
+        let testCount = 0;
+        for (let index = 0; index < this.filerZList.length; index++) {
+            let element = this.filerZList[index] as AABBShape;
+
+            let isCollstionTest = (source.collisionMask & 1 << element.mask) > 0;
+
+            if (source.id != element.id && isCollstionTest) {
+
+                let itemObjId = element.id;
+                let testaabb = element;
+                let collsion = false;
+
+                if (this.dicItemCollsionCharater[itemObjId][charaterObjKey] == true && Math.abs(source.transform.position.z - element.transform.position.z) > 50) continue;
+                testCount += 1;
+
+
+                collsion = charaterAABBGob.Intersects(testaabb);
+
+                if (collsion) {
+
+
+                    let collsioning = false;
+                    let haskey2 = false;
+
+                    haskey2 = this.dicItemCollsionCharater[itemObjId][charaterObjKey] != null;
+
+
+                    if (!haskey2) {
+                        console.log("not key:" + charaterObjKey);
+                    }
+
+
+
+                    if (this.dicItemCollsionCharater[itemObjId][charaterObjKey] == false) {
+
+                        source.OnShapeEnter(element);
+                        this.dicItemCollsionCharater[itemObjId][charaterObjKey] = true;
+                    }
+
+                }
+                else {
+
+                    if (this.dicItemCollsionCharater[itemObjId][charaterObjKey]) {
+
+                        source.OnShapeExit(element);
+
+                        this.dicItemCollsionCharater[itemObjId][charaterObjKey] = false;
+                    }
+
+                }
+
+            }
+
+
+        }
+
+    }
+
+    public TestSphereVsAllAABB(source: ShapeThreeD) {
+        let charaterAABBGob = source as AABBShape;
+        // type = -1;
+        //var collsionAny = false;
+
+
+
+        /**保证先出后进的问题的 */
+
+        let charaterObjKey = charaterAABBGob.id;
+        let testCount = 0;
+        for (let index = 0; index < this.Itemlist.length; index++) {
+            let element = this.Itemlist[index] as AABBShape;
+            //activeInHierarchy 父物体隐藏后一致
+            if (element.gameObject.activeInHierarchy == false) continue;
+
+            // testCount+=1;
+            //collsionShape.collsionMask  & collsionTarget.Mask > 0
+            let isCollstionTest = true;//(source.collsionMask & 1 << element.mask) > 0;
+            // if (source.GetInstanceID() != element.GetInstanceID() && element.mask == ShapeThreeD.Character|| element.mask == ShapeThreeD.Build)
+            if (source.id != element.id && isCollstionTest) {
+
+
+                let itemObjId = element.id;
+                let testaabb = element;
+                let collsion = false;
+
+                if (this.dicItemCollsionCharater[itemObjId][charaterObjKey] == true && Math.abs(source.transform.position.z - element.transform.position.z) > 50) continue;
+                testCount += 1;
+
+                collsion = charaterAABBGob.Intersects(testaabb);
+
+                // Debug.Log(rs);
+                if (collsion) {
+
+                    // if (this.dicCharaterCollsion[charaterObjKey]) return;
+                    //Debug.Log("Collsion");
+                    let collsioning = false;
+                    let haskey2 = false;
+
+
+                    //    haskey2 = this.dicItemCollsionCharater[itemObjId].TryGetValue(charaterObjKey, out collsioning);
+
+                    haskey2 = this.dicItemCollsionCharater[itemObjId][charaterObjKey] != null;
+
+
+                    if (!haskey2) {
+                        console.log("not key:" + charaterObjKey);
+                    }
+
+
+                    // if (this.dicCollsion[element.GetInstanceID()] == false)
+                    if (this.dicItemCollsionCharater[itemObjId][charaterObjKey] == false) {
+                        source.OnShapeEnter(element);
+                        this.dicItemCollsionCharater[itemObjId][charaterObjKey] = true;
+                    }
+                    // source.OnObbEnter(element);
+
+
+                    //collsionAny = true;
+
+                    // this.dicCharaterCollsionLast[charaterObjKey] = testaabb;
+                }
+                else {
+
+                    if (this.dicItemCollsionCharater[itemObjId][charaterObjKey]) {
+                        // this.datacg.source = source;
+                        // this.datacg.element = element;
+                        source.OnShapeExit(element);
+                        // this.exitList.push(this.datacg);
+                        this.dicItemCollsionCharater[itemObjId][charaterObjKey] = false;
+                    }
+                    //    source.OnObbExit(element);
+
+
+                    // this.dicCharaterCollsion[testKey] = false;
+                    //this.dicCollsion[element.GetInstanceID()] = false;
+                }
+
+            }
+
+
+        }
+
+    }
+
+
+    filerZList: ShapeThreeD[] = [];
+    GetFilterZItems(zStart: number) {
+        this.filerZList = [];
+        for (let index = 0; index < this.Itemlist.length; index++) {
+            let element = this.Itemlist[index] as AABBShape;
+            if (element.gameObject.activeInHierarchy == false) continue;
+            if (Math.abs(zStart - element.transform.position.z) > 30) continue;
+            this.filerZList.push(this.Itemlist[index]);
+        }
+    }
+
+
+
+
+
+
+
+
+    onEnable(): void {
+    }
+
+    onDisable(): void {
+    }
+
+    public static SweepTest(from: AABBShape, other: AABBShape, movement: Laya.Vector3): Laya.Vector3 {
+        let deltaX = movement.x;
+        let deltaY = movement.y;
+        let deltaZ = movement.z;
+        if (from.maxPoint.y > other.minPoint.y && from.minPoint.y < other.maxPoint.y && from.maxPoint.z > other.minPoint.z && from.minPoint.z < other.maxPoint.z) {
+            let d1 = 0;
+
+            if (deltaX > 0.0 && from.maxPoint.x <= other.minPoint.x) {
+                d1 = other.minPoint.x - from.maxPoint.x;
+
+                if (d1 < deltaX) {
+                    deltaX = d1;
+                }
+            }
+            else if (deltaX < 0.0 && from.minPoint.x >= other.maxPoint.x) {
+                d1 = other.maxPoint.x - from.minPoint.x;
+
+                if (d1 > deltaX) {
+                    deltaX = d1;
+                }
+            }
+        }
+
+        if (from.maxPoint.x > other.minPoint.x && from.minPoint.x < other.maxPoint.x && from.maxPoint.z > other.minPoint.z && from.minPoint.z < other.maxPoint.z) {
+            let d1;
+            if (deltaY > 0 && from.maxPoint.y <= other.minPoint.y) {
+                d1 = other.minPoint.y - from.maxPoint.y;
+                if (d1 < deltaY) {
+                    deltaY = d1;
+                }
+            }
+            else if (deltaY < 0 && from.minPoint.y >= other.maxPoint.y) {
+                d1 = other.maxPoint.y - from.minPoint.y;
+
+                if (d1 > deltaY) {
+                    deltaY = d1;
+                }
+            }
+        }
+
+        if (from.maxPoint.x > other.minPoint.x && from.minPoint.x < other.maxPoint.x && from.maxPoint.y > other.minPoint.y && from.minPoint.y < other.maxPoint.y) {
+            let d1;
+
+            if (deltaZ > 0.0 && from.maxPoint.z <= other.minPoint.z) {
+                d1 = other.minPoint.z - from.maxPoint.z;
+
+                if (d1 < deltaZ) {
+                    deltaZ = d1;
+                }
+            }
+            else if (deltaZ < 0.0 && from.minPoint.z >= other.maxPoint.z) {
+                d1 = other.maxPoint.z - from.minPoint.z;
+
+                if (d1 > deltaZ) {
+                    deltaZ = d1;
+                }
+            }
+        }
+
+        return new Laya.Vector3(deltaX, deltaY, deltaZ);
+    }
+
+    public IsSweepTestCollision(from: AABBShape, other: AABBShape, movement: Laya.Vector3): boolean {
+        let deltaX = movement.x;
+        let deltaY = movement.y;
+        let deltaZ = movement.z;
+        if (from.maxPoint.y > other.minPoint.y && from.minPoint.y < other.maxPoint.y && from.maxPoint.z > other.minPoint.z && from.minPoint.z < other.maxPoint.z) {
+            let d1 = 0;
+
+            if (deltaX > 0.0 && from.maxPoint.x <= other.minPoint.x) {
+                d1 = other.minPoint.x - from.maxPoint.x;
+
+                if (d1 < deltaX) {
+                    deltaX = d1;
+                    return true;
+                }
+            }
+            else if (deltaX < 0.0 && from.minPoint.x >= other.maxPoint.x) {
+                d1 = other.maxPoint.x - from.minPoint.x;
+
+                if (d1 > deltaX) {
+                    deltaX = d1;
+                    return true;
+                }
+            }
+        }
+
+        if (from.maxPoint.x > other.minPoint.x && from.minPoint.x < other.maxPoint.x && from.maxPoint.z > other.minPoint.z && from.minPoint.z < other.maxPoint.z) {
+            let d1;
+            if (deltaY > 0 && from.maxPoint.y <= other.minPoint.y) {
+                d1 = other.minPoint.y - from.maxPoint.y;
+                if (d1 < deltaY) {
+                    deltaY = d1;
+                    return true;
+                }
+            }
+            else if (deltaY < 0 && from.minPoint.y >= other.maxPoint.y) {
+                d1 = other.maxPoint.y - from.minPoint.y;
+
+                if (d1 > deltaY) {
+                    deltaY = d1;
+                    return true;
+                }
+            }
+        }
+
+        if (from.maxPoint.x > other.minPoint.x && from.minPoint.x < other.maxPoint.x && from.maxPoint.y > other.minPoint.y && from.minPoint.y < other.maxPoint.y) {
+            let d1;
+
+            if (deltaZ > 0.0 && from.maxPoint.z <= other.minPoint.z) {
+                d1 = other.minPoint.z - from.maxPoint.z;
+
+                if (d1 < deltaZ) {
+                    deltaZ = d1;
+                    return true;
+                }
+            }
+            else if (deltaZ < 0.0 && from.minPoint.z >= other.maxPoint.z) {
+                d1 = other.maxPoint.z - from.minPoint.z;
+
+                if (d1 > deltaZ) {
+                    deltaZ = d1;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+}

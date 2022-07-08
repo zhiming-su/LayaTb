@@ -1,0 +1,1 @@
+{"type":"Sprite","props":{"zOrder":1,"y":0,"x":0,"width":200,"texture":"res/effect.png","presetID":1,"pivotY":100,"pivotX":100,"name":"Effect","isPresetRoot":true,"height":200},"compId":34,"loadList":["res/effect.png"],"loadList3D":[]}

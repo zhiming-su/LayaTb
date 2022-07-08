@@ -1,0 +1,47 @@
+D .
+D effect
+P 051A264D 1.png
+P D7389473 10.png
+P A1DDF4E0 11.png
+P 60B69C70 2.png
+P 87B614C1 3.png
+P 74D65BF5 4.png
+P 4644BBA5 5.png
+P 08AA8AFA 6.png
+P E6363CE8 7.png
+P 91521142 8.png
+P FC0A4C12 9.png
+D res
+P E241443F 01_110px.png
+P C2AD41D7 02_130px.png
+P F5EBC3F1 03_150.png
+P 37EBB508 04_180.png
+P 70B4CC5C 05_210.png
+P 8EFB3913 06_240.png
+P A0C6F813 07_270.png
+P 2E734DA2 08_300.png
+P 7C4BC966 09_340.png
+R E80FFE77 bg.jpg
+R 4A243DED bgBlank.png
+P BE8DC4E7 blank.png
+P 1BBCD2B9 closeBtn.png
+R F3C06184 dot_1.png
+R 564D16DE dot_2.png
+R FFFE4C7D dot_3.png
+P D0E5F913 effect.png
+R E39E57C4 gameOverWin.png
+P 9DA33DA7 goHomeBtn.png
+P BA28BD65 img_blank.png
+R CD523F8D line1.png
+P BA4E9D4C logo.png
+R D262882A nextStep.png
+R 28B10B00 overLine.png
+P E1D929C3 playAgainBtn.png
+P DA59ABB6 scoreLogo.png
+P D7E86488 scoreUI.png
+R D410E9D7 skip.png
+R 87BD1011 startGame.png
+R C1AB40EC step_1.png
+R 534CD687 step_2.png
+R A431DB01 step_3.png
+P B1A8F593 target.png

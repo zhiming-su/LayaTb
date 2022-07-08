@@ -1,0 +1,12 @@
+{
+    "pages": [
+        
+        "pages/daxigua/game",
+        "pages/home/home"
+    ],
+    "window": {
+        "defaultTitle": "My App",
+        "allowsBounceVertical": "NO",
+        "enableSkia": true
+    }
+}

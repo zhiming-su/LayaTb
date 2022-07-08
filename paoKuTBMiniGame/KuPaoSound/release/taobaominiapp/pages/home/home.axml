@@ -1,0 +1,3 @@
+<view>
+  <button style="margin-top:50px" type="primary" onTap="goToUrl">城市跑酷(开始游戏)</button>
+</view>

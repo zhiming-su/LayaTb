@@ -1,0 +1,22 @@
+{
+    "1":{
+        "totalTimes":8,
+        "randomArray":[[0,1,2,3],[4,5]],
+        "randomTimes":[6,2]
+    },
+    "2":{
+        "totalTimes":9,
+        "randomArray":[[0,1,2,3],[6,7,8,9]],
+        "randomTimes":[6,3]
+    },
+    "3":{
+        "totalTimes":11,
+        "randomArray":[[0,1,2,3],[6,7,8,9],[10,11]],
+        "randomTimes":[5,4,2]
+    },
+    "4":{
+        "totalTimes":18,
+        "randomArray":[[0,1,2,3],[6,7,8,9],[10,11]],
+        "randomTimes":[9,5,4]
+    }
+}

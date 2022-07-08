@@ -1,0 +1,35 @@
+D .
+D effect
+P 5DA338DA 1.png
+P BD86981A 2.png
+P E71C6BBE 3.png
+P 9DC02CCD 4.png
+P 82223734 5.png
+P 2E6B9273 6.png
+P 45A73BA4 7.png
+P 1756354E 8.png
+D res
+P D6D4BC57 alipay.png
+R C04E08D1 bg.jpg
+P BE8DC4E7 blank.png
+P 90835FB7 blessbag.png
+P 7381FF45 chestbox.png
+P D32E24BC closeBtn.png
+P D160D3D4 coupon.png
+P 02CA3272 effect.png
+R 9E0D775F gameOverWin.png
+P 33C45514 giftbox.png
+P 4B8BF627 goHomeBtn.png
+P 63AC1C58 gold.png
+P BA28BD65 img_blank.png
+R 8D20016A line1.png
+R 8FE351B2 overLine.png
+P AE08757C playAgainBtn.png
+P D5B7285A redpacket.png
+P AA5631AE scoreLogo.png
+P 97DDDAFD scoreUI.png
+P B53D7C7F shopbag.png
+P DA754350 target.png
+P 0D4FC8B3 vipcard.png
+P D72BE44B voice.png
+P 8D6F89CE voice_close.png

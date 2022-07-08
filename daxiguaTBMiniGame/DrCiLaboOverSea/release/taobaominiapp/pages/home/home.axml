@@ -1,0 +1,3 @@
+<view>
+  <button style="margin-top:160px" type="primary" onTap="goToUrl">合成大作战(开始游戏)</button>
+</view>
